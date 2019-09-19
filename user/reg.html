@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Vue-add</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.js"></script>
+		<script src="../components/iform.js"></script>
+		<script src="../components/db.js"></script>
+		<script src="../components/v-model.js"></script>
+		<link rel="stylesheet" type="text/css" rev="stylesheet" href="../asai.css">
+	</head>
+	<body>
+		<div id="app" class="gys-k">
+			<div class="gys-kd">
+				<h2>新用户注册id,es,er,ex,eb,em,eh,et,ab,aq,ax,as,al,aj,ap,xy</h2>
+				<div class="gys-kr"></div>{{valarr}}
+				<!-- <mycomponent v-model="esxx"></mycomponent> -->
+				<!-- <iform v-for="(item,index) in lie" :key="index" :lieobj="item" v-model="valobj.("+item.mz+")"></iform> -->
+				<iform v-for="(item,index) in lie" :key="index" :id="index" :lieobj="item" @model="bakvalue"></iform>
+				<!-- <iform :lieobj="kkk" v-model="esxx"></iform> -->
+				<div class="gys-kr"></div>
+			</div>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					lie: db.us,
+					valarr: [
+						'eesai',
+						'asai',
+						'123456',
+						'阿赛 , 我是烟火',
+						'guoyansai@qq.com',
+						'15895982020',
+						'1',
+						'100',
+						'200',
+						'1',
+						'2019-09-06 20:00:09',
+						'20190918',
+						'20190929',
+						'128.26.35.269',
+						'5'
+					],
+				},
+				created() {
+					for (var index = 0; index < this.valarr.length; index++) {
+						// console.log(index+this.valarr[index]);
+						this.lie[index] = Object.assign(this.lie[index], {
+							value: this.valarr[index]
+						}); //数组的合并是concat ，类似操作
+					}
+				},
+				methods: {
+					bakvalue(data) {
+						console.log(data);
+						this.valarr[data.id] = data.value;
+					}
+
+				}
+			})
+		</script>
+	</body>
+</html>

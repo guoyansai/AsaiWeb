@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Vue-add</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.js"></script>
+		<link rel="stylesheet" type="text/css" rev="stylesheet" href="../asai/asai.css">
+	</head>
+	<body>
+		<div id="app" class="gys-k">
+			<div class="gys-kd">
+				<h2>添加/编辑</h2>
+				<div class="gys-kr"></div>
+				<div class="gys-kl-3">
+					<div class="gys-fm"><label class="gys-fmt" for="id">记录编号</label><input id="id" name="id" type="number" v-model="formid"
+						 title="请输入记录编号" placeholder="请输入记录编号记录编号" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"
+						 maxlength="20"></div>
+				</div>
+				<div class="gys-kl-3">
+					<div class="gys-fm"><label class="gys-fmt" for="us">记录作者</label><input id="us" name="us" type="text" v-model="formdata.uj_us"
+						 title="请输入作者" placeholder="请输入作者" maxlength="100"></div>
+				</div>
+				<div class="gys-kl-2">
+					<div class="gys-fm"><label class="gys-fmt" for="ty1">类型数字</label><input id="ty1" name="ty1" type="number" v-model="formdata.uj_ty"
+						 title="请输入类型数字" placeholder="请输入类型数字" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"
+						 maxlength="20"></div>
+				</div>
+				<div class="gys-kl-4">
+					<div class="gys-fm"><label class="gys-fmt" for="ty">记录类型</label><select id="ty" name="ty" v-model="formdata.uj_ty">
+							<option value="1">头条资讯</option>
+							<option value="2">├─社会万象</option>
+							<option value="3">├─娱乐八卦</option>
+							<option value="4">├─影音赏析</option>
+							<option value="5">南京新闻</option>
+							<option value="6">├─南京民生</option>
+							<option value="7">├─市级新闻</option>
+							<option value="8">├─区级新闻</option>
+							<option value="9">南京旅游</option>
+							<option value="10">├─南京景点</option>
+							<option value="11">├─游玩攻略</option>
+							<option value="12">├─南京导游</option>
+							<option value="13">综合门户</option>
+							<option value="14">├─生活常识</option>
+							<option value="15">├─网文推荐</option>
+							<option value="16">├─情感故事</option>
+							<option value="17">├─开心幽默</option>
+							<option value="18">├─美女图片</option>
+							<option value="19">├─菜谱大全</option>
+							<option value="20">├─今日特价</option>
+						</select></div>
+				</div>
+<!-- 				<div class="gys-kl-8">
+					<div class="gys-fm"><label class="gys-fmt" for="co">记录内容</label><input id="co" name="co" type="text" v-model="formdata.uj_co"
+						 title="请输入记录内容" placeholder="请输入记录内容" maxlength="100"></div>
+				</div> -->
+								<div class="gys-kl-8">
+									<div class="gys-fm"><label class="gys-fmt" for="co">记录内容</label><textarea v-model="formdata.uj_co"></textarea></div>
+								</div>
+				<div class="gys-kl-4">
+					<div class="gys-fm"><label class="gys-fmt" for="tm">发布时间</label><input id="tm" name="tm" type="text" v-model="formdata.uj_tm"
+						 title="请输入发布时间." placeholder="请输入发布时间." onkeyup="value=value.replace(/[^\:\ \-\/]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\:\ \-\/]/g,''))"></div>
+				</div>
+				<div class="gys-fb"><label class="gys-fmt">-</label><input type="button" value="添加" @click="postadd"><input type="button"
+					 class="gys-fmb" value="随机内容" @click="makeco"><input type="button" value="编辑" @click="postedit"></div>
+				<div class="gys-kr"></div>
+			</div>
+
+			<div class="gys-kd">
+				<div class="gys-kl-4 gys-cb-5">操作消息：<br>{{msg}}</div>
+				<div class="gys-kl-4 gys-cb-9">返回信息：<br>{{info}}</div>
+				<div class="gys-kl-4 gys-cb-13">编辑值：<br>{{formdata}}</div>
+			</div>
+			<h2>列表 第<input type="number" v-model="page" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"
+				 maxlength="20">页/每页<input type="number" v-model="pagesize" onkeyup="this.value=this.value.replace(/\D/g,'')"
+				 onafterpaste="this.value=this.value.replace(/\D/g,'')" maxlength="20">条</h2>
+			<div class="gys-dh">
+				<transition-group tag="div">
+					<div class="gys-kd" v-for="(item,index) in listdata.list" :key="item.uj_id">
+						<div class="gys-kl-1 gys-cb-5">{{index+1}}</div>
+						<div class="gys-kl-1 gys-cb-9">{{item.uj_id}}</div>
+						<div class="gys-kl-1 gys-cb-13">{{item.uj_ty}}</div>
+						<div class="gys-kl-4 gys-cb-5">{{item.uj_co}}</div>
+						<div class="gys-kl-1 gys-cb-9">{{item.uj_us}}</div>
+						<div class="gys-kl-2 gys-cb-13">{{item.uj_tm}}</div>
+						<div class="gys-kl-2 gys-cb-5"><button @click="showedit(item.uj_id)">修改</button><button @click="getdel(item.uj_id)">删除</button></div>
+					</div>
+				</transition-group>
+			</div>
+			<div>第{{listdata.page.page}}页/每页{{listdata.page.pagesize}}条/共{{listdata.page.pagecount}}页/共{{listdata.page.record}}条</div>
+		</div>
+		<script type="text/javascript">
+			new Vue({
+				el: '#app',
+				data() {
+					return {
+						formdata: {
+							uj_ty: 12,
+							uj_us: 'asai',
+							uj_co: '这是一个信心，测试用的！',
+							uj_tm: '2018/12/19 21:10:00'
+						},
+						formid: 6,
+						listdata: [],
+						info: [],
+						msg: '',
+						time: Date.parse(new Date()),
+						page: 1,
+						pagesize: 10,
+						qiehuan: false
+					}
+				},
+				created() {
+					this.makeco();
+					this.getinfo(this.formid);
+					this.getlist();
+				},
+				methods: {
+					makeco() { //生成随机新内容
+						this.formdata.uj_co = parseInt(Math.random() * 100) + this.formdata.uj_co;
+					},
+					getlist() { //ajax获取列表
+						axios.get('/909/?uj/list/' + this.page + '/' + this.pagesize)
+							.then(response => {
+								console.log(response);
+								this.listdata = response.data.data.list;
+								this.msg = '列表信息（第' + this.page + '页/每页' + this.pagesize + '条）读取成功！'
+							})
+							.catch(error => {
+								console.log(error);
+							})
+					},
+					getinfo(ga) { //ajax获取id信息
+						axios.get('/909/?uj/info/' + ga)
+							.then(response => {
+								console.log(response)
+								this.formdata = response.data.data.info
+								this.msg = '成功读取ID为' + ga + '的信息。'
+							})
+							.catch(error => {
+								console.log(error);
+							})
+					},
+					getdel(ga) { //删除
+						axios.get('/909/?uj/del/' + ga)
+							.then(response => {
+								console.log(response);
+								this.msg = '成功删除id为' + ga + '的信息！';
+								this.getlist();
+							})
+							.catch(error => {
+								console.log(error)
+							})
+					},
+					showedit(pa) { //编辑窗口
+						this.qiehuan = true;
+						this.formid = pa;
+					},
+					postadd() { //添加
+						if (this.formdata.uj_co !== '' && this.formdata.uj_us !== '') {
+							axios({
+									method: 'post',
+									url: '/909/?uj/add/',
+									data: this.formdata,
+									headers: {'Content-Type': 'application/json;charset=UTF-8',}
+									//headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',}//指定消息格式
+								})
+								.then(response => {
+									console.log(response);
+									this.info = response.config.data;
+									this.page = 1;
+									this.getlist();
+								})
+								.catch(error => {
+									//console.log(error);
+								})
+						} else {
+							this.info = {
+								'err': '备注、用户不能为空！'
+							}
+						}
+					},
+					postedit() { //编辑
+						if (this.formdata.uj_co !== '' && this.formdata.uj_us !== '') {
+							axios({
+									method: 'post',
+									url: '/909/?uj/edit/' + this.formid,
+									data: this.formdata,
+									headers: {
+										'Content-Type': 'application/json;charset=UTF-8',
+									}
+								})
+								.then(response => {
+									//console.log(response);
+									this.info = response.config.data;
+									this.getlist();
+								})
+								.catch(error => {
+									//console.log(error);
+								})
+						} else {
+							this.info = {
+								'err': '备注、用户不能为空！'
+							}
+						}
+					}
+				},
+				watch: {
+					formid: function(val) {
+						this.getinfo(val);
+					},
+					page: function(val) {
+						this.getlist();
+					},
+					pagesize: function(val) {
+						this.getlist();
+					}
+				},
+				filters: {
+					formatDate: function(value) {
+						let date = new Date(value);
+						let y = date.getFullYear();
+						let MM = date.getMonth() + 1;
+						MM = MM < 10 ? ('0' + MM) : MM;
+						let d = date.getDate();
+						d = d < 10 ? ('0' + d) : d;
+						let h = date.getHours();
+						h = h < 10 ? ('0' + h) : h;
+						let m = date.getMinutes();
+						m = m < 10 ? ('0' + m) : m;
+						let s = date.getSeconds();
+						s = s < 10 ? ('0' + s) : s;
+						return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+					}
+				},
+			})
+		</script>
+	</body>
+</html>

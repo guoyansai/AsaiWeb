@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Vue-add</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.js"></script>
+		<script src="../../components/vform.js"></script>
+		<link rel="stylesheet" type="text/css" rev="stylesheet" href="../../asai.css">
+	</head>
+	<body>
+		<div id="app" class="gys-k">
+		<div class="gys-kd">
+			<h2>添加id,eo,ey,ej,af,as,at</h2>
+			<div class="gys-kr"></div>
+			<vform v-for="(item,index) in lie" :key="index" :lieobj="item"></vform>
+		<div class="gys-kr"></div>
+		</div>
+		</div>
+		<script>
+			var app = new Vue({
+			  el: '#app',
+			  data: {
+			    lie:[
+						{mz:'eo',mx:200,lg:3,qx:0,ty:'text',rx:'',bt:'内容',ds:'短信内容'},
+						{mz:'ey',mx:20,lg:3,qx:0,ty:'短消息=0|邮箱短信=1|戳一下=2|阅后即焚=3|系统消息=7|系统通告=8',rx:'',bt:'短信类型',ds:''},
+						{mz:'ej',mx:20,lg:3,qx:0,ty:'text',rx:'',bt:'接收',ds:''},
+						{mz:'af',mx:20,lg:3,qx:1,ty:'text',rx:'',bt:'发送',ds:''},
+						{mz:'as',mx:20,lg:3,qx:0,ty:'text',rx:'',bt:'发送时间',ds:''},
+						{mz:'at',mx:20,lg:3,qx:0,ty:'text',rx:'',bt:'阅读时间',ds:''}
+						]
+			  }
+			})
+		</script>
+	</body>
+</html>
