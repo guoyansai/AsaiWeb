@@ -1,26 +1,18 @@
 <?php
-// define("G_CONN", realpath("asaimdb.mdb"));//数据库连接字符.
-// define("G_Q", "asai_");//数据表前缀名.
-// define("G_COBB", "请检查数据库连接！");//数据库连接错误抛出错误提示.
-// define("G_NULL", "没有查询到您需要的数据！");//SQL成功后没有查询到数据.
-// define("G_ERRS", "很抱歉，这个地方没有您需要的数据！");//读取API参数错误抛出错误提示.
-// define("G_ERR", 0);//调试开关-0关闭调试|1开启调试|2高级调试*是否开启调试功能.
-// define("G_PGS", 20);//分页中每页显示数量
-// define("G_GMM", "Gys.Z1nHdFYefo@Q2pqrxUAjBI~WzCwEaRtSc9Kh=TkP6XiJNuOMv5_0D3Vg4b7mL8l-");//密钥字串:系统密钥字符设置一经启用谨慎修改.
-// define("ASAIMAIL", "eesaicom@126.com");//系统邮件，收件人需要将该邮件设为白名单，以免发件被当做垃圾件丢失。
-
 //-----------------------------------main
 
-global $conn, $connty;
+global $conn, $connty,$output;
 global $g_sqln, $g_lin, $g_ltf, $g_lrr, $g_lii, $g_lco;
 $g_sqln = 0;
 $g_lin = '0';//临时变量
 $g_ltf = false;//临时变量
+$output=array();
 
 //-----------------------------------
 //read url
 //-----------------------------------
 global $g_uwww, $g_ur, $g_url, $g_urr, $g_u0, $g_u1, $g_u2, $g_u3, $g_u4, $g_u5, $g_u6;
+$g_u1=null;
 //$g_uwww=$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"];//包含端口号的完整url
 $g_uwww = $_SERVER['HTTP_HOST'];
 $g_ur = "http://" . $g_uwww . str_ireplace("index.php", "", $_SERVER['PHP_SELF']);
@@ -505,14 +497,14 @@ function aiconn($aifstr)
         $GLOBALS['conn'] = null;
     } else {
         aierr(2, $aifstr);
-				//echo $aifstr;
+        //echo $aifstr;
         try {
             $aidcrr = explode(',', $aifstr . '');
             $GLOBALS['connty'] = count($aidcrr);
             if ($GLOBALS['connty'] == 1) {
                 $GLOBALS['conn'] = new PDO("odbc:driver={microsoft access driver (*.mdb)};dbq=" . $aidcrr[0] . ";", "", "", array(PDO::ATTR_PERSISTENT=>true,PDO::ATTR_ERRMODE=>2,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'));
-								//echo $GLOBALS['conn'];
-								//array(PDO::MYSQL_ATTR_INIT_COMMAND => "set names GB2312")//array(PDO::ATTR_PERSISTENT=>true,PDO::ATTR_ERRMODE=>2,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8')
+            //echo $GLOBALS['conn'];
+                                //array(PDO::MYSQL_ATTR_INIT_COMMAND => "set names GB2312")//array(PDO::ATTR_PERSISTENT=>true,PDO::ATTR_ERRMODE=>2,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8')
                 //$GLOBALS['conn']->query("SET NAMES UTF8");
                 //$GLOBALS['conn']->exec("SET NAMES UTF8");
             } elseif ($GLOBALS['connty'] == 2) {
@@ -545,9 +537,9 @@ function gysjia($aifarr)
 //---------------------------
 function gysjie($aifarr)
 {
-	  $aifarr=json_decode(base64_decode($aifarr), true);
-		$aifarr=json_decode(json_encode($aifarr), true);
-		//echo '<h1>类型是：'.gettype($aifarr).'</h1>';
+    $aifarr=json_decode(base64_decode($aifarr), true);
+    $aifarr=json_decode(json_encode($aifarr), true);
+    //echo '<h1>类型是：'.gettype($aifarr).'</h1>';
     return $aifarr;
 }
 //---------------------------
@@ -555,12 +547,12 @@ function gysjie($aifarr)
 //---------------------------
 function saipost()
 {
-	  //aifwr('asai.json',gysjia(file_get_contents('php://input')));
-	  //aifwr('asaix.json',gysjie(gysjia(file_get_contents('php://input'))));
+    // aifwr('asai.json',gysjia(file_get_contents('php://input')));
+    // aifwr('asaix.json',gysjie(gysjia(file_get_contents('php://input'))));
     return gysjia(file_get_contents('php://input'));
-		//aifwr('asai.json',file_get_contents('php://input'));
+    //aifwr('asai.json',file_get_contents('php://input'));
     //return file_get_contents('php://input');
-	  //echo '111111111111'.gettype(file_get_contents('php://input'));
+      //echo '111111111111'.gettype(file_get_contents('php://input'));
     //return json_decode(file_get_contents('php://input'), true);
 }
 
@@ -576,13 +568,13 @@ function saipost()
 function saido($gyskb, $gyskl, $gysrr, $gyskt)
 {
     try {
-			$gyskb=G_Q.$gyskb;
-			      $gysrr=gysjie($gysrr);
-						//echo gettype($gysrr);
-            //print_r($gysrr);
+        $gyskb=G_Q.$gyskb;
+        $gysrr=gysjie($gysrr);
+        //echo gettype($gysrr);
+        //print_r($gysrr);
         if (is_array($gysrr)) {
             foreach ($gysrr as $key => $value) {
-								//echo $key.'='.$value.'='.sai2gb($value).'<br>';
+                //echo $key.'='.$value.'='.sai2gb($value).'<br>';
                 $$key = sai2gb($value);
                 //$$key = $value;
             }
@@ -618,13 +610,13 @@ function saido($gyskb, $gyskl, $gysrr, $gyskt)
                         aierr(1, $gysdlie . "===" . $gysdlin);
                         $stmt->bindValue($gysdlie, $gysdlin);
                     }
-								//echo '<h6>'.$gysdlie . '===' . $gysdlin.'</h6>';
+                    //echo '<h6>'.$gysdlie . '===' . $gysdlin.'</h6>';
                 }
                 $stmt->execute();
                 //echo gettype($gysrr).'<br>'.count($gysrr);
                 //print_r $gysrr;
                 return $gysrr;
-                //return $sql;
+            //return $sql;
             } elseif ($gyspr ==1 || substr($gyskt, 0, 1)==' ') {//编辑
                 $sql = "UPDATE " . $gyskb . " SET " . str_replace(",", "=?,", $gyskl) . "=? WHERE " . $gyskt . "";
                 aierr(2, $sql);
@@ -655,7 +647,7 @@ function saido($gyskb, $gyskl, $gysrr, $gyskt)
 function saidel($gyskb, $gyskt)
 {
     try {
-			$gyskb=G_Q.$gyskb;
+        $gyskb=G_Q.$gyskb;
         $sql = "DELETE FROM " . $gyskb;
         if ($gyskt <> '') {
             $sql .= " where " . $gyskt . "";
@@ -683,20 +675,20 @@ function saidel($gyskb, $gyskt)
 function saiview($gyskb, $gyskl, $gyskt)
 {
     try {
-			$gyskb=G_Q.$gyskb;
+        $gyskb=G_Q.$gyskb;
         $sql = "SELECT ";
         if ($GLOBALS['connty'] < 8) {
             $sql .= "top 1 ";
         }
         $sql .= $gyskl . " FROM " . $gyskb . "";
-        //echo $sql;
+        // echo $sql;
         if ($gyskt <> '') {
             $sql .= " where " . $gyskt . "";
         }
         if ($GLOBALS['connty'] > 8) {
             $sql .= " LIMIT 1";
         }
-        aierr(2, $sql);
+        // aierr(2, $sql);
         //$stmt = $GLOBALS['conn']->prepare($sql,"set names utf8");
         $stmt = $GLOBALS['conn']->prepare($sql);
         $stmt->execute();
@@ -721,7 +713,7 @@ function saiview($gyskb, $gyskl, $gyskt)
 function saitop($gyskb, $gyskl, $gyskt, $gyskp, $gyskn)
 {
     try {
-			$gyskb=G_Q.$gyskb;
+        $gyskb=G_Q.$gyskb;
         $sql = "SELECT ";
         if ($GLOBALS['connty'] < 8) {
             if ($gyskn > 0) {
@@ -764,7 +756,7 @@ function saitop($gyskb, $gyskl, $gyskt, $gyskp, $gyskn)
 function sailist($gyskb, $gyskid, $gyskl, $gyskt, $gyskp, $gyskpg, $gyskps)
 {
     try {
-			$gyskb=G_Q.$gyskb;
+        $gyskb=G_Q.$gyskb;
         //global $gyspg, $gysps, $gyspr, $gyspz;
         $sql = "SELECT COUNT('" . $gyskid . "') FROM " . $gyskb . "";
         if ($gyskt <> '') {
@@ -866,18 +858,18 @@ function saiout($aifty, $aifnm, $aifarr)
 function sai2gb($aifstr)
 {
     if ($aifstr!=='' && $aifstr!==null) {
-			$encode = mb_detect_encoding($aifstr,array('ASCII','GB2312','GBK','UTF-8'));
-			echo $encode.'='.$aifstr.'=';
-			   //if ($encode !== "GB2312"){
-					$aifstr=iconv($encode, 'GB2312//IGNORE', $aifstr);
-					$aifstr=iconv('GB2312', 'GB2312//IGNORE', $aifstr);
-					//$aifstr=mb_convert_encoding($aifstr,'EUC-CN',$encode);
-				//}
+        $encode = mb_detect_encoding($aifstr, array('ASCII','GB2312','GBK','UTF-8'));
+        echo $encode.'='.$aifstr.'=';
+        //if ($encode !== "GB2312"){
+        $aifstr=iconv($encode, 'GB2312//IGNORE', $aifstr);
+        $aifstr=iconv('GB2312', 'GB2312//IGNORE', $aifstr);
+    //$aifstr=mb_convert_encoding($aifstr,'EUC-CN',$encode);
+                //}
     } else {
         $aifstr='';
     }
-		echo mb_detect_encoding($aifstr,array('ASCII','GB2312','GBK','UTF-8')).'='.$aifstr.'<br>';
-		return $aifstr;
+    echo mb_detect_encoding($aifstr, array('ASCII','GB2312','GBK','UTF-8')).'='.$aifstr.'<br>';
+    return $aifstr;
 }
 
 //---------------------------
@@ -886,19 +878,19 @@ function sai2gb($aifstr)
 function sai2utf($aifstr)
 {
     if ($aifstr!=='' && $aifstr!==null) {
-			//$encode = mb_detect_encoding($aifstr, mb_detect_order());
-			$encode = mb_detect_encoding($aifstr,array('ASCII','GB2312','GBK','UTF-8'));
-			//echo $encode.'test';
-			   //if ($encode !== "UTF-8"){
-					//echo iconv($encode, "UTF-8//TRANSLIT", $aifstr);
-					$aifstr=iconv($encode, 'UTF-8//IGNORE', $aifstr);
-					$aifstr=iconv('UTF-8', 'UTF-8//IGNORE', $aifstr);
-					//$aifstr=mb_convert_encoding($aifstr,'UTF-8',$encode);
-				//}
+        //$encode = mb_detect_encoding($aifstr, mb_detect_order());
+        $encode = mb_detect_encoding($aifstr, array('ASCII','GB2312','GBK','UTF-8'));
+        //echo $encode.'test';
+        //if ($encode !== "UTF-8"){
+        //echo iconv($encode, "UTF-8//TRANSLIT", $aifstr);
+        $aifstr=iconv($encode, 'UTF-8//IGNORE', $aifstr);
+        $aifstr=iconv('UTF-8', 'UTF-8//IGNORE', $aifstr);
+    //$aifstr=mb_convert_encoding($aifstr,'UTF-8',$encode);
+                //}
     } else {
         $aifstr='';
     }
-		return $aifstr;
+    return $aifstr;
 }
 //---------------------------
 //saijie
@@ -1226,4 +1218,35 @@ class asaismtp
         $this->smtp_debug(". [EOM]\n");
         return $this->smtp_ok();
     }
+}
+
+// echo G_BFL.'<BR>';// id,en,eb,ep,xy
+// echo sailie("ai", G_BFL, 0).'<BR>';// ai_id,ai_en,ai_eb,ai_ep,ai_xy
+// echo sailie("ai", G_BFL, 1).'<BR>';// ai_en,ai_eb,ai_ep,ai_xy
+// echo sailie("ai", G_BFL, 2).'<BR>';// ai_id,ai_en,ai_eb,ai_ep
+// echo sailie("ai", G_BFL, 3).'<BR>';// ai_en,ai_eb,ai_ep
+function sailie($aifmz, $aifstr, $aifty)
+{
+    $aidnew="";
+    if ($aifty===0) {
+        $aidnew=$aifmz.'_'.str_replace(',', ','.$aifmz.'_', $aifstr);
+    } elseif ($aifty===1) {
+        $aidnew=$aifmz.'_'.str_replace(',', ','.$aifmz.'_', str_replace('id,', '', $aifstr));
+    } else {
+        $aidarr=explode(',', $aifstr);
+        $aidlen=count($aidarr);
+        if ($aifty===2) {
+            $aidnew=$aifmz.'_'.$aidarr[0];
+        }
+        for ($aidi=1;$aidi<$aidlen;$aidi++) {
+            $aidk=substr($aidarr[$aidi], 0, 1);
+            if ($aidk==='e') {
+                if ($aidnew!=="") {
+                    $aidnew=$aidnew.',';
+                }
+                $aidnew=$aidnew.$aifmz.'_'.$aidarr[$aidi];
+            }
+        }
+    }
+    return $aidnew;
 }
