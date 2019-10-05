@@ -35,26 +35,24 @@ if ($g_urs <> "") {
 //echo '$g_url='.$g_url.'<br>$g_uwww='.$g_uwww.'<br>$g_ur='.$g_ur.'<br>$g_urs='.$g_urs.'<br>$g_u0='.$g_u0.'<br>$g_u1='.$g_u1.'<br>$g_u2='.$g_u2.'<br>$g_u3='.$g_u3.'<br>$g_u4='.$g_u4.'<br>$g_u5='.$g_u5.'<br>$g_u6='.$g_u6;
 
 //---------------------------
-//aierr(0,"这是一个数据存取的错误提示！");
-//aierr(1,"这是一个普通调试信息！");
-//aierr(2,"这是一个管理级别的错误提示！");
-//aierr(0,"这是一个数据存取的错误提示（第二次）！");
+// aierr(0, "这是一个数据存取的错误提示！");
+// aierr(1, "这是一个普通调试信息！");
+// aierr(2, "这是一个管理级别的错误提示！");
+// aierr(0, "这是一个数据存取的错误提示（第二次）！");
 //---------------------------
 function aierr($aifty, $aifstr)
 {
     if (G_ERR > 0) {
-        echo '<p>';
         if ($aifty == 1) {
-            echo '' . microtime() . '：<s>' . $aifstr . '</s>';
+            aifwt(G_ERRL, microtime() . "：" . $aifstr . "\r\n");
         } elseif ($aifty == 2) {
             if (G_ERR > 1) {
-                echo '' . microtime() . '：<i>' . $aifstr . '</i>';
+                aifwt(G_ERRL, microtime() . "：" . $aifstr . "\r\n");
             }
         } else {
             $GLOBALS['g_sqln'] += 1;
-            echo '' . $GLOBALS['g_sqln'] . '、<b>' . microtime() . '</b>：<u>' . $aifstr . '</u>';
+            aifwt(G_ERRL, $GLOBALS['g_sqln'] . "、".microtime()."：".$aifstr."\r\n");
         }
-        echo '</p>';
     }
 }
 
@@ -121,8 +119,23 @@ function aifwr($aifdir, $aifstr)
         return false;
     } else {
         aifcd(dirname($aifdir));
-        aierr(1, "创建了一个文件：" . $aifdir);
         file_put_contents($aifdir, $aifstr);
+        return true;
+    }
+}
+
+//---------------------------
+//print_r(aifwt('asai.txt','向asai文件增加内容！'));
+//print_r(aifwt('asai/wang/asai.html',aifrd("http://asai.wang/asai.html")));
+//---------------------------
+function aifwt($aifdir, $aifstr)
+{
+    if (ainullx($aifdir, '')) {
+        return false;
+    } else {
+        aifcd(dirname($aifdir));
+        file_put_contents($aifdir, $aifstr, FILE_APPEND);
+        // fwrite(fopen($aifdir,'ab+'),$aifstr);//另一种方法
         return true;
     }
 }
@@ -271,7 +284,6 @@ function aixn($aifstr, $aifty)
                 $aidnlz = intval($aidnl / 36);
                 $aidnly = $aidnrr[$aidnl % 36];
                 $aixn = $aidnly . $aixn;
-                //aierr(1,$aixn);
             }
             $aixn = $aidnrr[$aidnlz] . $aixn . $aixnl;
         }
@@ -285,7 +297,6 @@ function aixn($aifstr, $aifty)
         } else {
             $aifstr = strrev($aifstr);
             for ($aidni = 1; $aidni <= $aidnlen; $aidni++) {
-                //aierr(1,strpos($aidnx,substr($aifstr,($aidni-1),1)).'X'.pow(36,($aidni-1)).'='.strpos($aidnx,substr($aifstr,($aidni-1),1))*pow(36,($aidni-1)));
                 $aixn += strpos($aidnx, substr($aifstr, ($aidni - 1), 1)) * pow(36, ($aidni - 1));
             }
         }
@@ -393,17 +404,14 @@ function aimm($aifkey, $aifstr, $aifty)
     $aikdys = $aidlen % $aiklen;
     $aidks = strrev(substr($aifkey, $aikdys, $aiklen) . substr($aifkey, 0, $aikdys));
     $aidks = $aidks . $aidks;
-    //aierr(1,$aidks);
     for ($aidni = 1; $aidni <= $aidlen; $aidni++) {
         $aidsy = substr($aifstr, ($aidni - 1), 1);
         $aidnw = strpos($aifkey, $aidsy);
         if ($aidnw !== false) {
             if ($aifty == 0) {
                 $aimm .= substr($aidks, ($aidnw + ($aidni % $aiklen)), 1);
-            //aierr(1,$aidsy.'='.$aidnw.'='.substr($aidks,($aidnw+($aidni%$aiklen)),1));
             } else {
                 $aimm .= substr($aidks, ($aidnw + ($aidni % $aiklen)), 1);
-                //aierr(1,$aidsy.'='.$aidnw.'='.substr($aidks,($aidnw+($aidni%$aiklen)),1));
             }
         } else {
             $aimm .= $aidsy;
@@ -496,8 +504,7 @@ function aiconn($aifstr)
     if ($aifstr === 0) {
         $GLOBALS['conn'] = null;
     } else {
-        aierr(2, $aifstr);
-        //echo $aifstr;
+        // aierr(2, $aifstr);
         try {
             $aidcrr = explode(',', $aifstr . '');
             $GLOBALS['connty'] = count($aidcrr);
@@ -574,9 +581,9 @@ function saido($gyskb, $gyskl, $gysrr, $gyskt)
         //print_r($gysrr);
         if (is_array($gysrr)) {
             foreach ($gysrr as $key => $value) {
-                //echo $key.'='.$value.'='.sai2gb($value).'<br>';
+							// aierr(2,$key.'='.$value.'='.sai2gb($value).'\r\n');
                 $$key = sai2gb($value);
-                //$$key = $value;
+                // $$key = $value;
             }
 
             $gysklrr = explode(",", $gyskl);
@@ -589,10 +596,10 @@ function saido($gyskb, $gyskl, $gysrr, $gyskt)
                 if ($GLOBALS['connty'] > 8) {
                     $sql .= " LIMIT 1";
                 }
-                aierr(2, $sql);
-                //$gyspr = count($GLOBALS['conn']->query($sql)->fetchAll());
-                $gyspr = $GLOBALS['conn']->query($sql)->fetch()[0];
-                //echo $sql.'=========='.$gyspr;
+                aierr(3, $sql);
+                $gyspr = count($GLOBALS['conn']->query($sql)->fetchAll());
+                //$gyspr = $GLOBALS['conn']->query($sql)->fetch()[0];
+								// aierr(2, $gyspr.'---'.substr($gyskt, 0, 1));
                 if ($gyspr < 1) {
                     $gyspr = 0;
                 }
@@ -600,7 +607,7 @@ function saido($gyskb, $gyskl, $gysrr, $gyskt)
 
             if ($gyspr == 0) {//添加
                 $sql = "INSERT INTO " . $gyskb . " (" . $gyskl . ") VALUES (:" . str_replace(",", ",:", $gyskl) . ")";
-                aierr(2, $sql);
+                aierr(3, $sql);
                 $stmt = $GLOBALS['conn']->prepare($sql);
                 for ($gyskli = 0; $gyskli < $gysklu; $gyskli++) {
                     $gysdlm = $gysklrr[$gyskli];
@@ -610,7 +617,7 @@ function saido($gyskb, $gyskl, $gysrr, $gyskt)
                         aierr(1, $gysdlie . "===" . $gysdlin);
                         $stmt->bindValue($gysdlie, $gysdlin);
                     }
-                    //echo '<h6>'.$gysdlie . '===' . $gysdlin.'</h6>';
+										// aierr(2,$gysdlie . '===' . $gysdlin.'\r\n');
                 }
                 $stmt->execute();
                 //echo gettype($gysrr).'<br>'.count($gysrr);
@@ -619,11 +626,12 @@ function saido($gyskb, $gyskl, $gysrr, $gyskt)
             //return $sql;
             } elseif ($gyspr ==1 || substr($gyskt, 0, 1)==' ') {//编辑
                 $sql = "UPDATE " . $gyskb . " SET " . str_replace(",", "=?,", $gyskl) . "=? WHERE " . $gyskt . "";
-                aierr(2, $sql);
+                aierr(3, $sql);
                 $stmt = $GLOBALS['conn']->prepare($sql);
                 for ($gyskli = 0; $gyskli < $gysklu; $gyskli++) {
                     $gysdlm = $gysklrr[$gyskli];
                     $gysdlrr[$gyskli] = $$gysdlm;
+										aierr(2,$gysdlrr[$gyskli] . '=' . $$gysdlm.'\r\n');
                 }
                 $stmt->execute($gysdlrr);
                 return $gysrr;
@@ -652,7 +660,7 @@ function saidel($gyskb, $gyskt)
         if ($gyskt <> '') {
             $sql .= " where " . $gyskt . "";
         }
-        aierr(1, $sql);
+        aierr(3, $sql);
         $stmt = $GLOBALS['conn']->prepare($sql);
         $stmt->execute();
         $num = $stmt->rowCount();
@@ -688,7 +696,7 @@ function saiview($gyskb, $gyskl, $gyskt)
         if ($GLOBALS['connty'] > 8) {
             $sql .= " LIMIT 1";
         }
-        // aierr(2, $sql);
+        aierr(3, $sql);
         //$stmt = $GLOBALS['conn']->prepare($sql,"set names utf8");
         $stmt = $GLOBALS['conn']->prepare($sql);
         $stmt->execute();
@@ -732,7 +740,7 @@ function saitop($gyskb, $gyskl, $gyskt, $gyskp, $gyskn)
                 $sql .= " LIMIT 0," . $gyskn;
             }
         }
-        aierr(2, $sql);
+        aierr(3, $sql);
         $stmt = $GLOBALS['conn']->prepare($sql);
         $stmt->execute();
         $saiarr = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -762,7 +770,7 @@ function sailist($gyskb, $gyskid, $gyskl, $gyskt, $gyskp, $gyskpg, $gyskps)
         if ($gyskt <> '') {
             $sql .= " WHERE " . $gyskt . "";
         }
-        aierr(2, $sql);
+        aierr(3, $sql);
         $gyspr = $GLOBALS['conn']->query($sql)->fetchColumn();
         $gysps = aiint($gyskps);
         if ($gysps < 1) {
@@ -812,7 +820,7 @@ function sailist($gyskb, $gyskid, $gyskl, $gyskt, $gyskp, $gyskpg, $gyskps)
         if ($GLOBALS['connty'] > 8) {
             $sql .= " LIMIT " . ($gyspg - 1) * $gysps . "," . $gysps;
         }
-        aierr(2, $sql);
+        aierr(3, $sql);
         $saiarr = $GLOBALS['conn']->query($sql)->fetchAll();
         if (is_array($saiarr)) {
             //print_r($saiarr);

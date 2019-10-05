@@ -1,24 +1,34 @@
 Vue.component('iform', {
-	template: `
-<div :class="'gys-kl-'+lieobj.lg">
-<div class="gys-fm">
-<label class="gys-fmt" :for="lieobj.mz">{{lieobj.bt}}</label>
-<input type="text" :name="lieobj.mz" :type="lieobj.ty" :title="lieobj.ds" :placeholder="lieobj.ds" :maxlength="lieobj.mx" @input="input" :value="modelVal">
-</div>
-</div>
-</div>
-`,
-model:{value:'value',event:'input'},
-	props: ['value','lieobj'],
-	data(){
-		return{
-			modelVal:this.value
+	model: {
+		value: 'value',
+		event: 'input'
+	},
+	props: ['value', 'eldb'],
+	data() {
+		return {
+			modelVal: this.value,
+			tempstr: ''
 		}
 	},
-	methods:{
-		input(){
+	created() {
+
+this.tempstr =
+`
+<div :class="'gys-kl-'+eldb.lg">
+<div class="gys-fm">
+<label class="gys-fmt" :for="eldb.mz">{{eldb.bt}}</label>
+<input type="text" :name="eldb.mz" :type="eldb.ty" :title="eldb.ds" :placeholder="eldb.ds" :maxlength="eldb.mx" @input="input" :value="modelVal">
+</div>
+</div>
+</div>
+`
+	},
+
+	template: this.tempstr,
+	methods: {
+		input() {
 			console.log(this.modelVal)
-			this.$emit('input',this.modelVal);
+			this.$emit('input', this.modelVal);
 		}
 	}
 });
